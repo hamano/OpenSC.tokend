@@ -477,6 +477,10 @@ void OpenSCToken::populate()
 	if (r >= 0) {
 		for (i = 0; i < r; i++) {
 			struct sc_pkcs15_cert_info *cert_info = (struct sc_pkcs15_cert_info *) objs[i]->data;
+			if (objs[i]->flags & SC_PKCS15_CO_FLAG_PRIVATE) {
+				sc_debug(mScCtx, SC_LOG_DEBUG_NORMAL, "    - %s (ID=%s) skip PIN protected certificate\n", objs[i]->label, sc_pkcs15_print_id(&cert_info->id));
+				continue;
+			}
 			//  get the actual record
 			RefPointer<Tokend::Record> record(new OpenSCCertificateRecord(this, objs[i]));
 			// put it into certificates map
