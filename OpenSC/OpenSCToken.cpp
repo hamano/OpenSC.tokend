@@ -533,10 +533,6 @@ void OpenSCToken::populate()
 			} else
 				continue;
 			
-			// put it into prkey map
-			sc_debug(mScCtx, SC_LOG_DEBUG_NORMAL, "    - %s (ID=%s)\n", objs[i]->label, sc_pkcs15_print_id(&prkey_info->id));
-			privateKeyRelation.insertRecord(record);
-
 			// do the bind between the key and a cert
 			IdRecordMap::const_iterator it;
 			for (it = mCertificates.begin(); it != mCertificates.end(); it++) {
@@ -546,6 +542,9 @@ void OpenSCToken::populate()
 			if (it == mCertificates.end())
 				sc_debug(mScCtx, SC_LOG_DEBUG_NORMAL, "        no certificate found for this key\n");
 			else {
+				// put it into prkey map
+				sc_debug(mScCtx, SC_LOG_DEBUG_NORMAL, "    - %s (ID=%s)\n", objs[i]->label, sc_pkcs15_print_id(&prkey_info->id));
+				privateKeyRelation.insertRecord(record);
 				sc_debug(mScCtx, SC_LOG_DEBUG_NORMAL, "        linked this key to cert \"%s\"\n", it->second->description());
 				record->setAdornment(mSchema->publicKeyHashCoder().certificateKey(),
 					new Tokend::LinkedRecordAdornment(it->second));
